@@ -97,8 +97,18 @@ namespace CameraControlCmd
             }
             if (ServiceProvider.DeviceManager.ConnectedDevices.Count == 0)
             {
+#if DEBUG
+                if (_arguments.Contains("fake"))
+                {
+                    Console.WriteLine("No connected device was found ! /fake - continuing");
+                    ServiceProvider.DeviceManager.AddFakeCamera();
+                } else {
+#endif
                     Console.WriteLine("No connected device was found ! Exiting");
                     return 0;
+#if DEBUG
+                }
+#endif
             }
             int exitCodes = ExecuteArgs();
             Thread.Sleep(250);
@@ -534,6 +544,7 @@ namespace CameraControlCmd
             Console.WriteLine(" /wait [mseconds]           - after done wait for a keypress/ milliseconds ");
 #if DEBUG
             Console.WriteLine(" /nop                       - force past usage with no parameters");
+            Console.WriteLine(" /fake                      - IF no camera, create a fake one to allow debugging");
 #endif
             Console.WriteLine(" /verbose                   - lots of status messages");
             Console.WriteLine("----------------------------------------------------------------------------------------");
