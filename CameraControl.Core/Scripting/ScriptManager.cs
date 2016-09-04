@@ -232,6 +232,10 @@ namespace CameraControl.Core.Scripting
             }
             _timer.Start();
             var thread = new Thread(ExecuteThread);
+            thread.Name = "Script_execute";
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
             thread.Start(scriptObject);
         }
 

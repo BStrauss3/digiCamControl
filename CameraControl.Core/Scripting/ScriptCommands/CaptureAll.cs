@@ -47,7 +47,12 @@ namespace CameraControl.Core.Scripting.ScriptCommands
             foreach (ICameraDevice cameraDevice in ServiceProvider.DeviceManager.ConnectedDevices)
             {
                 ICameraDevice device = cameraDevice;
-                new Thread(() => Capture(device)).Start();
+                Thread thread = new Thread(() => Capture(device));
+                thread.Name = "Script_execute_capture";
+#if DEBUG
+                Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
+                thread.Start();
             }
             return true;
         }

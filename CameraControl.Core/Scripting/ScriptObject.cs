@@ -110,12 +110,20 @@ namespace CameraControl.Core.Scripting
         public void StartCapture()
         {
             Thread thread = new Thread(StartCaptureThread);
+            thread.Name = "StartCapture";
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
             thread.Start();
         }
 
         public void StopCapture()
         {
             Thread thread = new Thread(StopCaptureThread);
+            thread.Name = "StopCapture";
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
             thread.Start();
         }
 

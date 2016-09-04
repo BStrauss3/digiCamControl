@@ -48,6 +48,10 @@ namespace CameraControl.Core.Scripting.ScriptCommands
             {
                 ServiceProvider.ScriptManager.OutPut("Capture started");
                 var thread = new Thread(() => CaptureAsync(scriptObject));
+                thread.Name = "Script_execute_capture";
+#if DEBUG
+                Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
                 thread.Start();
                 Thread.Sleep(100);
             }

@@ -190,6 +190,7 @@ namespace CameraControlCmd
             }
 
             Thread thread = new Thread(WaitForCameras);
+            thread.Name = "CmdMain_WaitForCameras";
             thread.Start();
 
             Dispatcher.Run();
@@ -482,7 +483,12 @@ namespace CameraControlCmd
 
                 if (_arguments.Contains("capture"))
                 {
-                    new Thread(Capture).Start();
+                    Thread thread = new Thread(Capture);
+                    thread.Name = "Cmd_capture";
+#if DEBUG
+                    Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
+                    thread.Start();
                     Thread.Sleep(200);
                     return 0;
                 }
@@ -516,7 +522,12 @@ namespace CameraControlCmd
                     foreach (ICameraDevice cameraDevice in ServiceProvider.DeviceManager.ConnectedDevices)
                     {
                         ICameraDevice device = cameraDevice;
-                        new Thread(device.CapturePhoto).Start();
+                        Thread thread = new Thread(device.CapturePhoto);
+                        thread.Name = "Captureall_" + device.DeviceName;
+#if DEBUG
+                        Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
+                        thread.Start();
                     }
                 }
                 if (_arguments.Contains("captureallnoaf"))
@@ -524,7 +535,12 @@ namespace CameraControlCmd
                     foreach (ICameraDevice cameraDevice in ServiceProvider.DeviceManager.ConnectedDevices)
                     {
                         ICameraDevice device = cameraDevice;
-                        new Thread(device.CapturePhotoNoAf).Start();
+                        Thread thread = new Thread(device.CapturePhotoNoAf);
+                        thread.Name = "Captureallnoaf_" + device.DeviceName;
+#if DEBUG
+                        Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
+                        thread.Start();
                     }
                 }
             }
@@ -677,6 +693,10 @@ namespace CameraControlCmd
         {
             Thread thread = new Thread(PhotoCaptured);
             thread.SetApartmentState(ApartmentState.STA);
+            thread.Name = "PhotoCaptured";
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
             thread.Start(eventArgs);
             //thread.Join();
         }

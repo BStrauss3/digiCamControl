@@ -120,6 +120,10 @@ namespace CameraControl.Core.Classes
                                                                                  exception.Message;
                                                                          }
                                                                      }));
+                threadcamera.Name = "CaptureAll";
+#if DEBUG
+                Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", threadcamera.Name, threadcamera.ManagedThreadId, "Create"));
+#endif
                 threadcamera.Start();
             }
         }

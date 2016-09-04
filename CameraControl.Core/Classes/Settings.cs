@@ -75,6 +75,10 @@ namespace CameraControl.Core.Classes
                                                                     LoadData(_defaultSession);
                                                                     NotifyPropertyChanged("DefaultSession");
                                                                 }));
+                    thread.Name = "PhotoSession_Default";
+#if DEBUG
+                    Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
                     thread.Start();
                 }
             }

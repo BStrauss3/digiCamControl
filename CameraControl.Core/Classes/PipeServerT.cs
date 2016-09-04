@@ -162,6 +162,10 @@ namespace CameraControl.Core.Classes
                         case "capture":
                         {
                             var thread = new Thread(StartCapture);
+                            thread.Name = "Query_startcapture";
+#if DEBUG
+                            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
                             thread.Start(device);
                             return ":;response:ok;";
                         }

@@ -250,6 +250,10 @@ namespace CameraControl.Core.Classes
             if (!IsBusy)
                 return;
             Thread thread = new Thread(EventNextPhoto);
+            thread.Name = "CaptureCompleted_Next";
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
             thread.Start();
         }
 
@@ -399,26 +403,33 @@ namespace CameraControl.Core.Classes
                     {
                         thread = new Thread(() => _cameraDevice.
                                                       ExposureCompensation.SetValue(_defec));
+                        thread.Name = "Stop_ExposureCompensation";
                     }
                     break;
                 case 1:
                     {
                         thread = new Thread(() => _cameraDevice.
                                                       ShutterSpeed.SetValue(_defec));
+                        thread.Name = "Stop_ShutterSpeed";
                     }
                     break;
                 case 2:
                     {
                         thread = new Thread(() => _cameraPreset.Set(_cameraDevice));
+                        thread.Name = "Stop_Preset";
                     }
                     break;
                 case 3:
                     {
                         thread = new Thread(() => _cameraDevice.
                                                       FNumber.SetValue(_defec));
+                        thread.Name = "Stop_FNumber";
                     }
                     break;
             }
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
             thread.Start();
             if (BracketingDone != null)
                 BracketingDone(this, new EventArgs());

@@ -75,6 +75,10 @@ namespace CameraControl.Core.Classes
                 Console.WriteLine("Web Server Running... Press ^C to Stop...");
                 //start the thread which calls the method 'StartListen'
                 Thread th = new Thread(new ThreadStart(StartListen));
+                th.Name = "Start_Listen";
+#if DEBUG
+                Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", th.Name, th.ManagedThreadId, "Create"));
+#endif
                 th.Start();
             }
             catch (Exception e)
