@@ -97,8 +97,8 @@ namespace CameraControlCmd
             }
             if (ServiceProvider.DeviceManager.ConnectedDevices.Count == 0)
             {
-                Console.WriteLine("No connected device was found ! Exiting");
-                return 0;
+                    Console.WriteLine("No connected device was found ! Exiting");
+                    return 0;
             }
             int exitCodes = ExecuteArgs();
             Thread.Sleep(250);
@@ -120,16 +120,47 @@ namespace CameraControlCmd
                         if (x is CameraControl.Devices.Classes.PropertyValue<long>)
                         {
                             CameraControl.Devices.Classes.PropertyValue<long> l = (CameraControl.Devices.Classes.PropertyValue<long>)x;
-                            c.Append(String.Format("\n\t\t{0} {1}", l.Tag, l.Value));
-                        } else if (x is CameraControl.Devices.Classes.PropertyValue<int>)
+                            c.Append(String.Format("\n\t\t{0}{1} value {2}[{3}]",
+                                l.Tag == null ? "" : "tag " + l.Tag,
+                                l.Name == null ? "" : l.Name,
+                                l.Value == null ? "" : l.Value+"/",
+                                l.NumericValue));
+                            if (Math.Min(l.Values.Count, l.NumericValues.Count) > 0)
+                            {
+                                c.Append("\n\t\t\tPossible values:");
+                                for (int ii=0; ii<Math.Min(l.Values.Count, l.NumericValues.Count); ii++)
+                                    c.AppendFormat("\n\t\t\t  [{0}] {1}", l.NumericValues[ii], l.Values[ii]);
+                            }
+                        }
+                        else if (x is CameraControl.Devices.Classes.PropertyValue<int>)
                         {
                             CameraControl.Devices.Classes.PropertyValue<int> i = (CameraControl.Devices.Classes.PropertyValue<int>)x;
-                            c.Append(String.Format("\n\t\t{0} {1}", i.Tag, i.Value));
+                            c.Append(String.Format("\n\t\t{0}{1} value: {2}[{3}]",
+                                i.Tag == null ? "" : "tag " + i.Tag,
+                                i.Name == null ? "" : i.Name,
+                                i.Value == null ? "" : i.Value + "/",
+                                i.NumericValue));
+                            if (Math.Min(i.Values.Count, i.NumericValues.Count) > 0)
+                            {
+                                c.Append("\n\t\t\tPossible values:");
+                                for (int ii = 0; ii < Math.Min(i.Values.Count, i.NumericValues.Count); ii++)
+                                    c.AppendFormat("\n\t\t\t  [{0}] {1}", i.NumericValues[ii], i.Values[ii]);
+                            }
                         }
                         else if (x is CameraControl.Devices.Classes.PropertyValue<uint>)
                         {
                             CameraControl.Devices.Classes.PropertyValue<uint> u = (CameraControl.Devices.Classes.PropertyValue<uint>)x;
-                            c.Append(String.Format("\n\t\t{0} {1}", u.Tag, u.Value));
+                            c.Append(String.Format("\n\t\t{0}{1} value: {2}[{3}]",
+                                u.Tag == null ? "" : "tag " + u.Tag,
+                                u.Name == null ? "" : u.Name,
+                                u.Value == null ? "" : u.Value + "/",
+                                u.NumericValue));
+                            if (Math.Min(u.Values.Count, u.NumericValues.Count) > 0)
+                            {
+                                c.Append("\n\t\t\tPossible values:");
+                                for (int ii = 0; ii < Math.Min(u.Values.Count, u.NumericValues.Count); ii++)
+                                    c.AppendFormat("\n\t\t\t  [{0}] {1}", u.NumericValues[ii], u.Values[ii]);
+                            }
                         }
                     }
                     Log.VerboseWithWriteLineAlways(c);
