@@ -174,9 +174,24 @@ namespace Setup
 
             }
             project.InstallScope = InstallScope.perMachine;
-            project.ResolveWildCards();
+            try
+            {
+                project.ResolveWildCards();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(String.Format("ResolveWildCards {0}", ex.ToString()));
+            }
             Compiler.PreserveTempFiles = false;
-            string productMsi = Compiler.BuildMsi(project);
+            string productMsi = "";
+            try
+            {
+                productMsi = Compiler.BuildMsi(project);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(String.Format("BuildMsi {0}", ex.ToString()));
+            }
             string obsMsi = ObsPluginSetup.Execute();
             Thread.Sleep(2000);
             var dict = new Dictionary<string, string>();
@@ -185,6 +200,13 @@ namespace Setup
             new PackageGroupRef("NetFx46Web"),
             //new ExePackage("vcredist_x86.exe"){InstallCommand ="/quite" },
             new MsiPackage(Path.Combine(Path.GetDirectoryName(productMsi), "IPCamAdapter.msi")) { Permanent = false,Attributes = dict},
+/* in theory this would download the package, but hard codes the home directory of this package...
+            new MsiPackage(Path.Combine(Path.GetDirectoryName(productMsi), "IPCamAdapter.msi")) {
+                Permanent = false,
+                Attributes = dict,
+                DownloadUrl = "http://ip-webcam.appspot.com/static/IPCamAdapter.msi" 
+            },
+*/
             new MsiPackage(obsMsi) { Id = "ObsPackageId", Attributes = dict },
             new MsiPackage(productMsi) { Id = "MyProductPackageId", DisplayInternalUI = true, Attributes = dict });
 
