@@ -63,7 +63,11 @@ namespace CameraControlCmd
             if (!args.Any() || _arguments.Contains("help"))
             {
                 ShowHelp();
-                Console.ReadLine();
+            	if (_arguments.Contains("verbose"))
+				{
+    	            Console.Write("\nPress enter to continue...");
+        	        Console.ReadLine();
+				}
                 return 0;
             }
             if (_arguments.Contains("verbose"))
@@ -84,7 +88,9 @@ namespace CameraControlCmd
                 Log.VerboseWithWriteLine(String.Format("\nProcessed arguments:\n{0}\n",_arguments.ToString("     ")));
             }
 
+            Log.Verbose("Initializing...");
             InitApplication();
+            Log.Verbose("...Initialization done");
             Thread.Sleep(1000);
             while (CamerasAreBusy())
             {
@@ -92,7 +98,9 @@ namespace CameraControlCmd
             }
             if (args != null && args.Count() == 1 && File.Exists(args[0]))
             {
+                Log.VerboseWithWriteLine(String.Format("Running script {0}...", args[0]));
                 RunScript(args[0]);
+                Log.VerboseWithWriteLine("... script done");
                 return 0;
             }
             if (ServiceProvider.DeviceManager.ConnectedDevices.Count == 0)
@@ -110,8 +118,12 @@ namespace CameraControlCmd
                 }
 #endif
             }
+            Log.Verbose("Processing arguments...");
             int exitCodes = ExecuteArgs();
+            Log.Verbose("...processing done");
+
             Thread.Sleep(250);
+            Log.Verbose("...done");
 
             if ((Log.IsVerbose) && ( _arguments.Contains("capture") ||
                                     _arguments.Contains("capturenoaf") ||
@@ -187,10 +199,25 @@ namespace CameraControlCmd
 
         private static void WaitForCameras()
         {
+            bool _bMessageSent = false;
+
+            Log.Verbose("WaitForCameras start");
+            int _count = 0;
+
             while (CamerasAreBusy())
             {
-                Thread.Sleep(1);
+                if (!_bMessageSent)
+                {
+                    _bMessageSent = true;
+                    Log.VerboseWithWriteAlways("Waiting while cameras are busy...");
+                }
+                _count = Log.WriteSpinner(_count);             
+                Thread.Sleep(100);
             }
+
+            if (_bMessageSent)
+                Log.Verbose("...done");
+
             if (_arguments.Contains("wait"))
             {
                 int time = 0;
@@ -209,6 +236,7 @@ namespace CameraControlCmd
                     Console.ReadLine();
                 }
             }
+            Log.Verbose("WaitForCameras end");
             System.Environment.Exit(0);
         }
 
@@ -241,6 +269,16 @@ namespace CameraControlCmd
 
         private static int ExecuteArgs()
         {
+
+            /*
+             * Note that each of these is checking if any arguments contain the flag value. Thus 
+             * 
+             * note the lack of elseif - each of these sections is stand-alone
+             * sequence is important (capture before capturenoaf effectively disables capturenoaf)
+             * a return will prevent processing of any other parameters
+             * some of these create threads for asynch processing and some do not
+             */
+
             try
             {
                 if (_arguments.Contains("verbose"))
@@ -501,6 +539,7 @@ namespace CameraControlCmd
 
         private static void Capture()
         {
+            Log.Verbose("Capture() start");
             try
             {
                 ServiceProvider.DeviceManager.SelectedCameraDevice.IsBusy = true;
@@ -523,6 +562,7 @@ namespace CameraControlCmd
                 ServiceProvider.DeviceManager.SelectedCameraDevice.IsBusy = false;
                 Console.WriteLine("Error occurred while capturing photo " + exception);
             }
+            Log.Verbose("Capture() end");
         }
 
         private static void ShowHelp()
@@ -565,8 +605,16 @@ namespace CameraControlCmd
 
         private static void InitApplication()
         {
-            ServiceProvider.Branding = Branding.LoadBranding();
+            try
+            {
+                ServiceProvider.Branding = Branding.LoadBranding();
+            }
+            catch
+            {
+                Console.WriteLine("No branding available... continuing");
+            }
             ServiceProvider.ConfigureDatabase();
+            Log.Debug("Command line utility started");
             ServiceProvider.Settings = new Settings();
             ServiceProvider.Settings = ServiceProvider.Settings.Load();
             ServiceProvider.Settings.LoadSessionData();
