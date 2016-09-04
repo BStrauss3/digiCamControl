@@ -724,6 +724,10 @@ namespace CameraControl.Devices
                 {
                     Thread _thread = new Thread(() => ConnectToCamera(true));
                     _thread.SetApartmentState(ApartmentState.MTA);
+                    _thread.Name = "OnEvent_PhotoCaptured";
+#if DEBUG
+                    Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", _thread.Name, _thread.ManagedThreadId, "Create"));
+#endif
                     _thread.Start();
                 }
                 else

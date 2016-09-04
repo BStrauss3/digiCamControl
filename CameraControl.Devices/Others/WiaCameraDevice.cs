@@ -655,6 +655,9 @@ namespace CameraControl.Devices.Others
         public override void CapturePhoto()
         {
             Monitor.Enter(Locker);
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId, "Start (post Monitor)"));
+#endif
             try
             {
                 IsBusy = true;
@@ -668,12 +671,18 @@ namespace CameraControl.Devices.Others
             catch
             {
                 IsBusy = false;
+#if DEBUG
+                Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId, "error"));
+#endif
                 throw;
             }
             finally
             {
                 Monitor.Exit(Locker);
             }
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId, "End"));
+#endif
         }
 
         public override void Close()

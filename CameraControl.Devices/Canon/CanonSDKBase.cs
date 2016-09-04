@@ -1047,7 +1047,9 @@ namespace CameraControl.Devices.Canon
 
         public override void CapturePhoto()
         {
-            Log.Debug("EOS capture start");
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId, "Start"));
+#endif
             Monitor.Enter(Locker);
             try
             {
@@ -1084,7 +1086,9 @@ namespace CameraControl.Devices.Canon
             {
                 Monitor.Exit(Locker);
             }
-            Log.Debug("EOS capture end");
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId, "End"));
+#endif
         }
 
         private uint ResetShutterButton()
@@ -1097,7 +1101,9 @@ namespace CameraControl.Devices.Canon
 
         public override void CapturePhotoNoAf()
         {
-            Log.Debug("EOS capture start");
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId, "Start"));
+#endif
             Monitor.Enter(Locker);
             try
             {
@@ -1134,7 +1140,9 @@ namespace CameraControl.Devices.Canon
             {
                 Monitor.Exit(Locker);
             }
-            Log.Debug("EOS capture end");
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId, "End"));
+#endif
         }
 
         public override void StartBulbMode()
