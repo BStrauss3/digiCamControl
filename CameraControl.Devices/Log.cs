@@ -131,5 +131,40 @@ namespace CameraControl.Devices
             }
         }
 
+        public static int WriteSpinner(int _count)
+        {
+            switch (_count++ % 8)
+            {
+                case 0:
+                    Console.Write("|\b");
+                    break;
+                case 1:
+                    Console.Write("/\b");
+                    break;
+                case 2:
+                    Console.Write("-\b");
+                    break;
+                case 3:
+                    Console.Write("\\\b");
+                    break;
+                case 4:
+                    Console.Write("|\b");
+                    break;
+                case 5:
+                    Console.Write("/\b");
+                    break;
+                case 6:
+                    Console.Write("-\b");
+                    break;
+                case 7:
+                    Console.Write("\\\b");
+                    break;
+                default:
+                    Console.Write(" \b");
+                    break;
+            };
+
+            return _count;
+        }
     }
 }
