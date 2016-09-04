@@ -458,6 +458,11 @@ namespace CameraControl.Devices.Nikon
                 }
                 // load advanced properties in a separated thread to speed up camera connection
                 var thread = new Thread(LoadProperties) {Priority = ThreadPriority.Lowest};
+                thread.Name = "LoadProperties(NikonBase)";
+#if DEBUG
+                Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
+
                 thread.Start();
             }
             catch (Exception exception)
@@ -1126,6 +1131,10 @@ namespace CameraControl.Devices.Nikon
             else
             {
                 Thread thread = new Thread(GetEvent);
+                thread.Name = "GetEvent(NikonBase)";
+#if DEBUG
+                Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
                 thread.Start();
             }
         }

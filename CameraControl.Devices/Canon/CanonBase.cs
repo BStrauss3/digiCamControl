@@ -137,6 +137,10 @@ namespace CameraControl.Devices.Canon
                 lock (Locker)
                 {
                     Thread thread = new Thread(getEvent);
+                    thread.Name = "getEvent(CanonBase)";
+#if DEBUG
+                    Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
                     thread.Start();
                 }
             }

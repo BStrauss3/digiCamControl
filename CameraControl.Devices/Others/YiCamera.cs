@@ -59,6 +59,10 @@ namespace CameraControl.Devices.Others
 
 
             var thread = new Thread(LoadProperties) { Priority = ThreadPriority.Lowest };
+            thread.Name = "LoadProperties(Yi)";
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
             thread.Start();
             return true;
         }

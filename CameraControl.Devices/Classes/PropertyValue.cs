@@ -205,6 +205,9 @@ namespace CameraControl.Devices.Classes
         {
             Thread thread = new Thread(OnValueChangedThread);
             thread.Name = "SetProperty thread " + Name;
+#if DEBUG
+            Log.VerboseWithWriteLine(String.Format("Thread({0}-{1}) {2}", thread.Name, thread.ManagedThreadId, "Create"));
+#endif
             thread.Start(new object[] { sender, key, val });
             thread.Join(200);
         }
