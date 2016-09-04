@@ -34,6 +34,7 @@ namespace CameraControl.Core.Classes
             Templates.Add("[Barcode]", templatePharser);
             Templates.Add("[File format]", templatePharser);
             Templates.Add("[Camera Name]", templatePharser);
+            Templates.Add("[Camera Order]", templatePharser);
             Templates.Add("[Selected Tag1]", templatePharser);
             Templates.Add("[Selected Tag2]", templatePharser);
             Templates.Add("[Selected Tag3]", templatePharser);
@@ -84,8 +85,13 @@ namespace CameraControl.Core.Classes
             {
                 if (ServiceProvider.FilenameTemplateManager.Templates.ContainsKey(match.Value))
                 {
+                    IFilenameTemplate template = ServiceProvider.FilenameTemplateManager.Templates[match.Value];
+                    if (template.IsRuntime)
+                    {
+                        continue;
+                    }
                     res = res.Replace(match.Value,
-                        ServiceProvider.FilenameTemplateManager.Templates[match.Value].Pharse(match.Value, session,
+                        template.Pharse(match.Value, session,
                             device, fileName, file));
                 }
             }

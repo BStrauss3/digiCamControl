@@ -309,11 +309,16 @@ namespace CameraControl.Devices.Sony
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
+                Log.Debug("Sony get error ", ex);
             }
             _timer.Start();
+        }
+
+        public override void CapturePhotoNoAf()
+        {
+            CapturePhoto();
         }
 
         public override void CapturePhoto()
@@ -337,12 +342,14 @@ namespace CameraControl.Devices.Sony
                     else
                     {
                         IsBusy = false;
+                        Log.Error("Sony capture error ", exception);
                         throw;
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
                     IsBusy = false;
+                    Log.Error("Sony capture error ", ex);
                     throw;
                 }
             }
@@ -352,6 +359,7 @@ namespace CameraControl.Devices.Sony
                 var url = u;
                 if (url.Contains("?"))
                     url = url.Split('?')[0];
+                Log.Debug("Url to process " + url);
                 PhotoCapturedEventArgs args = new PhotoCapturedEventArgs
                 {
                     WiaImageItem = null,
@@ -409,7 +417,7 @@ namespace CameraControl.Devices.Sony
         private static void SetCapability<T>(PropertyValue<T> prop, Capability<string> cap)
         {
             // refresh properties only if the collection or value was changed 
-            if (prop.Value == cap.Current && prop.Values.Count == cap.Candidates.Count)
+            if (prop?.Value == cap.Current && prop.Values.Count == cap.Candidates.Count)
                 return;
             //prop.Clear(false);
             foreach (string val in cap.Candidates)

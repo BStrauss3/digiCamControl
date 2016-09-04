@@ -7,6 +7,8 @@ namespace CameraControl.Core.Classes
 {
     public class FilenameTemplate : IFilenameTemplate
     {
+        public bool IsRuntime => false;
+
         public string Pharse(string template, PhotoSession session, ICameraDevice device, string fileName, string tempfileName)
         {
             CameraProperty property = device.LoadProperties();
@@ -64,6 +66,8 @@ namespace CameraControl.Core.Classes
                     return GetType(fileName);
                 case "[Original Filename]":
                     return Path.GetFileNameWithoutExtension(fileName);
+                case "[Camera Order]":
+                    return property.SortOrder.ToString("D3");
                 case "[Camera Name]":
                     return property.DeviceName.Replace(":", "_").Replace("?", "_").Replace("*", "_");
                 case "[Selected Tag1]":
