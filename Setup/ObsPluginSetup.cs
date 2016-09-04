@@ -64,7 +64,14 @@ namespace Setup
             project.ControlPanelInfo.ProductIcon = "logo.ico";
             project.InstallScope = InstallScope.perMachine;
 
-            project.ResolveWildCards();
+            try
+            {
+                project.ResolveWildCards();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(String.Format("ResolveWildCards2 {0}", ex.ToString()));
+            }
             Compiler.PreserveTempFiles = false;
             return Compiler.BuildMsi(project);
         }
